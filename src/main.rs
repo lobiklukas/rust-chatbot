@@ -1,3 +1,6 @@
+use api::ws;
+pub mod api;
+
 #[cfg(feature = "ssr")]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -18,6 +21,7 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .route("/api/{tail:.*}", leptos_actix::handle_server_fns())
+            .route("/generateImage", web::get().to(ws))
             // serve JS/WASM/CSS from `pkg`
             .service(Files::new("/pkg", format!("{site_root}/pkg")))
             // serve other assets from the `assets` directory
@@ -71,6 +75,6 @@ pub fn main() {
     leptos::mount_to_body(move |cx| {
         // note: for testing it may be preferrable to replace this with a
         // more specific component, although leptos_router should still work
-        view! {cx, <App/> }
+        view! { cx, <App/> }
     });
 }
